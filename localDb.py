@@ -27,7 +27,8 @@ class sqliteDb:
     def get_commments(self,date,stockId):
         table_name = "{0}-{1}".format(date,stockId)
         cursor = self.cur.execute("SELECT comment FROM \"{0}\" ".format(table_name))
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        return list(result)
 
 
     def commit(self):

@@ -45,15 +45,9 @@ def main():
         stock_comments = crawler.get_chichatting_context(today.replace('-','/'))        
 
         for stock,comments in stock_comments.items():
-            table_name = '{0}-{1}'.format(today,stock)
-            # Record the stock and date on the main table, TWStock. 
-            db.insert_main_data("TW_Stock","stock","log_date",stock,today)
-            # Create the stock table
-            db.create_stock_table(table_name)
-            # Insert the acquired comments into its stock table
-            db.insert(comments,table_name,"comment")
-        db.commit()
-        db.close()
+            url = "http://127.0.0.1:5000//StockData/{0}/{1}"
+            data  = {"comments":comments}
+            result = requests.post(url.format(stock,today),json=data)
     except Exception as ex:
         print("There is error in the code. Error msg={0}".format(ex))
 
