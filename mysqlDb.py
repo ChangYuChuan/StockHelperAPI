@@ -1,8 +1,16 @@
 import mysql.connector
+import json
 
 class mysqlDb:
+    def __read_local_config(self,config_path):
+        f = open(config_path, "r")
+        config = json.load(f)
+        f.close()
+        return config['localhost']
+
     def __init__(self) -> None:
-       self.__db = mysql.connector.connect( host="localhost",user="root",password="19920827",database="stockdb")
+        config = self.__read_local_config("C:\\db\\mysql_config\\configuration.json")
+        self.__db = mysql.connector.connect(**config)
        
     def add_stock_comment(self,stock_name, source ,log_date, comments):
         try:
@@ -28,5 +36,5 @@ class mysqlDb:
 
 if __name__ == '__main__':
     db = mysqlDb()
-    db.add_stock_comment('聯電-KY','PTT','2021-10-30',['慘','沒救','請問有人買嗎?'])
+    db.add_stock_comment('聯電-KY','PTT','2021-11-30',['慘','沒救','請問有人買嗎?'])
     db.close()
