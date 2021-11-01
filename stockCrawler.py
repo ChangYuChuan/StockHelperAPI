@@ -21,7 +21,9 @@ class crawler(ABC):
 class pttCrawler(crawler):
     def __init__(self) -> None:
         self.base_url = "https://www.ptt.cc/bbs/Stock/"
-        self.twStocksList = [ v.name for k,v in twstock.twse.items()] 
+        twStockFiltered=list(filter(lambda x:x[1].type == '股票',twstock.twse.items()))
+        self.twStocksList = list(map(lambda x:x[1].name,twStockFiltered))
+
 
     def __getPageUrlByNumb(self,num):
         return self.base_url + "index{0}.html".format(num)
@@ -49,18 +51,21 @@ class pttCrawler(crawler):
         return result
 
     def get_chichatting_context(self,date,stocks='none'):
-        # get url of first page
-        url = self.__getPageUrlByNumb(0)
-        page = requests.get(url)
-        stock_soup = BeautifulSoup(page.content,"html.parser")
-        article_node = stock_soup.find_all(lambda tag: tag.name == "a" and date in tag.text)
-        if(len(article_node) == 0):
-            raise Exception("The crawler cannot find the article based on the date {0}".format(date))
-        cchat_URL = "https://www.ptt.cc/" + article_node[0]['href']
-        cchat_page = requests.get(cchat_URL)
-        cchat_soup = BeautifulSoup(cchat_page.content,"html.parser")
-        comments_list = cchat_soup.findAll("span", {"class": "f3 push-content"})
-        return self.__get_matching_comments(comments_list,stocks)
+        try:
+            # get url of first page
+            url = self.__getPageUrlByNumb(0)
+            page = requests.get(url)
+            stock_soup = BeautifulSoup(page.content,"html.parser")
+            article_node = stock_soup.find_all(lambda tag: tag.name == "a" and date in tag.text)
+            if(len(article_node) == 0):
+                raise Exception("The crawler cannot find the article based on the date {0}".format(date))
+            cchat_URL = "https://www.ptt.cc/" + article_node[0]['href']
+            cchat_page = requests.get(cchat_URL)
+            cchat_soup = BeautifulSoup(cchat_page.content,"html.parser")
+            comments_list = cchat_soup.findAll("span", {"class": "f3 push-content"})
+            return self.__get_matching_comments(comments_list,stocks)
+        except Exception as ex:
+            print(ex)
 
     def get_comments(self, stocks, start, end):
         pass
