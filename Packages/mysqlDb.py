@@ -10,7 +10,7 @@ class mysqlDb:
         return config['localhost']
 
     def __init__(self) -> None:
-        config = self.__read_local_config("C:\\db\\mysql_config\\configuration.json")
+        config = self.__read_local_config("C:\\Config\\mysql_config.json")
         self.__db = mysql.connector.connect(**config)
        
     def add_stock_comment(self,stock_name, source ,log_date, comments):
