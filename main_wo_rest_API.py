@@ -11,7 +11,7 @@ def main():
         db = mysqlDb()
         today = date.today().strftime("%Y-%m-%d")
         crawler = pttCrawler()
-        stock_comments = crawler.get_chichatting_context(today.replace('-','/'))
+        stock_comments = crawler.get_today_chichatting_context(today.replace('-','/'))
         
         for stock_name,comments in stock_comments.items():
             db.add_stock_comment(stock_name,'PTT',today,comments)

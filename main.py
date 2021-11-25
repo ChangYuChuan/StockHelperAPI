@@ -9,7 +9,7 @@ def main():
         url = "https://www.ptt.cc/bbs/Stock/index.html"
         today = date.today().strftime("%Y-%m-%d")
         crawler = pttCrawler()
-        stock_comments = crawler.get_chichatting_context(today.replace('-','/'))
+        stock_comments = crawler.get_today_chichatting_context(today.replace('-','/'))
         if(stock_comments == None):
             raise Exception('The return from pttCrawler is empty')   
 

@@ -1,6 +1,7 @@
 from typing import ByteString
 from flask import Flask, request, Response
 from Packages.mysqlDb import mysqlDb
+from Packages.stockCrawler import pttCrawler,telgramCrawler
 
 
 app = Flask(__name__)
@@ -39,7 +40,32 @@ def InsertStockComments(source,stock_name,date):
     except Exception as ex:
         return Response("Fail to insert the data",status=404,mimetype='application/json')
     
+@app.route('/StockData/PTT/<stock_name>', methods=['GET'])
+def get(stock_name):
+    try:
+        # the methods below is the way how we get the arguments from query.
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        # Add PttCrawler
+        return result
+    except Exception as ex:
+        return Response("Fail to retrive the data",status=404,mimetype='application/json')
 
+@app.route('/StockData/Telegram/<stock_name>', methods=['GET'])
+def get(stock_name):
+    try:
+        config_path = "C:\\Config\\telegram_config.json"
+        # the methods below is the way how we get the arguments from query.
+        start_date = request.args.get('start_date')
+        end_date = request.args.get('end_date')
+        teleCrawler = telgramCrawler(config_path)
+        result = teleCrawler.get_comments(stock_name,start_date,end_date)
+        if result[0] == True:
+            return result[1]
+        else:
+            raise Exception(result[1])
+    except Exception as ex:
+        return Response("Fail to retrive the data",status=404,mimetype='application/json')
 
 if __name__ == "__main__":
     app.config['JSON_AS_ASCII'] = False

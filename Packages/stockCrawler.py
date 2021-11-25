@@ -1,8 +1,12 @@
 from bs4 import BeautifulSoup
-from datetime import date
 from abc import ABC, abstractmethod
 import requests
 import twstock
+from telethon import TelegramClient
+from telethon import functions, types
+from datetime import datetime
+from telethon.tl.types import InputPeerChat
+import json
 
 
 class crawler(ABC):
@@ -50,7 +54,7 @@ class pttCrawler(crawler):
                 result[stock] = matching
         return result
 
-    def get_chichatting_context(self,date,stocks='none'):
+    def get_today_chichatting_context(self,date,stocks='none'):
         try:
             # get url of first page
             url = self.__getPageUrlByNumb(0)
@@ -74,14 +78,39 @@ class pttCrawler(crawler):
 
 
 class telgramCrawler(crawler):
-    def get_comments(self, stocks, start, end):
-        pass
+    def __init__(self,config_path) -> None:
+        super().__init__()
+        with open(config_path, "r") as f:
+            self.config = json.load(f)
+
+    async def get_comments(self, stock_name, start_date, end_date):
+        try:
+            peerChat = InputPeerChat(1301096229)
+            async with TelegramClient(self.config['username'], self.config['api_id'],self.config['api_hash']) as client:
+                chat = await client.get_input_entity(1301096229)
+                result = await client(functions.messages.SearchRequest(
+                    peer=chat,
+                    q=stock_name,
+                    filter=types.InputMessagesFilterEmpty(),
+                    min_date=datetime.strptime(start_date, '%Y-%m-%d'),
+                    max_date=datetime.strptime(end_date, '%Y-%m-%d'),
+                    offset_id=0,
+                    add_offset=0,
+                    limit=100,
+                    max_id=0,
+                    min_id=0,
+                    hash=0,
+                    from_id=None ,
+                    top_msg_id=None 
+                ))
+            comments = list(map(lambda x:(x.date.strftime("%Y-%m-%d")),result.messages))
+            return True, comments
+        except Exception as ex:
+            return False, ex
 
 
 def main():
-    crawler = pttCrawler()
-    result = crawler.get_chichatting_context("2021/09/28",['長榮','陽明'])
-    print(result)
+    pass
 
 if __name__=='__main__':
     main()
