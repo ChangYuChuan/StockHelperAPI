@@ -2,40 +2,40 @@
 
 ## In this API server, developer provide 3 main functionalities.
 ### 1.get_stock_history: Calculate the how much profit you will make when following BUY AND HOLD concept on certain stock, using YahooFinance API.
-  **For example, when inpt** 
-  {"data": [
-    {"stockName": "TSLA", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"},
-    {"stockName": "MSFT", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"},
-    {"stockName": "QQQ", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"}
-    ]
-  }
-  **The API will return**
-   "result": [
-        {
-            "cost": 19065.920013427734,
-            "endDate": "2021-07-04",
-            "netLiq": 22677.60040283203,
-            "profit": 3611.680389404297,
-            "startDate": "2020-07-04",
-            "stockName": "TSLA"
-        },
-        {
-            "cost": 22479.680068969727,
-            "endDate": "2021-07-04",
-            "netLiq": 27351.3603515625,
-            "profit": 4871.680282592773,
-            "startDate": "2020-07-04",
-            "stockName": "MSFT"
-        },
-        {
-            "cost": 21921.559967041016,
-            "endDate": "2021-07-04",
-            "netLiq": 25519.900512695312,
-            "profit": 3598.340545654297,
-            "startDate": "2020-07-04",
-            "stockName": "QQQ"
-        }
-    ]
+    **For example, when inpt** 
+        "data": [
+            {"stockName": "TSLA", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"},
+            {"stockName": "MSFT", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"},
+            {"stockName": "QQQ", "payPerMonth": "2000","isDividentReinvest":"true","endDate":"2021-07-04","startDate":"2020-07-04"}
+        ]
+        
+    **The API will return**
+        "result": [
+            {
+                "cost": 19065.920013427734,
+                "endDate": "2021-07-04",
+                "netLiq": 22677.60040283203,
+                "profit": 3611.680389404297,
+                "startDate": "2020-07-04",
+                "stockName": "TSLA"
+            },
+            {
+                "cost": 22479.680068969727,
+                "endDate": "2021-07-04",
+                "netLiq": 27351.3603515625,
+                "profit": 4871.680282592773,
+                "startDate": "2020-07-04",
+                "stockName": "MSFT"
+            },
+            {
+                "cost": 21921.559967041016,
+                "endDate": "2021-07-04",
+                "netLiq": 25519.900512695312,
+                "profit": 3598.340545654297,
+                "startDate": "2020-07-04",
+                "stockName": "QQQ"
+            }
+        ]
   
   
 ### 2.get_ptt_stock_comments: search comments related to specific stock name during a paticular period of time from https://www.ptt.cc/bbs/Stock/index0.html
