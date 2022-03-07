@@ -1,14 +1,9 @@
-import imp
 from types import SimpleNamespace
 from flask import Flask, request, Response
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from Packages.mysqlDb import mysqlDb
 from Packages.stockCrawler import PttCrawler, TelgramCrawler
-import json,time
 from Packages.YahooFinance import YahooFinance
-from Packages.pttObj import PttObj
-from functools import wraps
-import asyncio
 
 
 app = Flask(__name__)

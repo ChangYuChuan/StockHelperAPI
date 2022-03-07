@@ -1,13 +1,11 @@
-from cProfile import label
+
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 
-from sympy import EX, ln
-
 
 class PttObj():
-    """Objectfy the how to craw ptt page."""
+    """Objectfy the ptt page based on topic and number."""
     def __init__(self, topic:str = 'stock',number:int=0) -> None:
         if(topic == '' or number < 0):
             raise Exception('Input parameters passed to constructor are not correct')
