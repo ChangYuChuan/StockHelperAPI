@@ -51,7 +51,7 @@ class PttCrawler(crawler):
             print(kvp)
             for key,val in kvp.items():
                 print('{0} {1}'.format(key,val))
-                ddic[key].extend(val)
+                ddic[key.strftime('%Y-%m-%d')].extend(val)
         return dict(ddic)
     
     def __collect_pushInfo_by_loop(self, pttObj:PttObj, target_stocks:list,old_date:datetime, new_date:datetime,limit:int):
@@ -94,7 +94,7 @@ class PttCrawler(crawler):
                         continue
                     if(current_article.date < old_date ):
                         return result
-                    if(limit != None and count > limit):
+                    if(limit != None and count > int(limit)):
                         return result
                     filterd_pushs = self.__find_keyword(target_stocks,current_article.pushs_list)
                     count = count + len(filterd_pushs)
@@ -189,7 +189,7 @@ class TelgramCrawler(crawler):
                 max_date=datetime.strptime(end_date, '%Y/%m/%d'),
                 offset_id=0,
                 add_offset=0,
-                limit=limit,
+                limit=int(limit),
                 max_id=0,
                 min_id=0,
                 hash=0,
@@ -203,14 +203,15 @@ class TelgramCrawler(crawler):
             print(kvp)
             for key,val in kvp.items():
                 print('{0} {1}'.format(key,val))
-                ddic[key].append(val)
+                ddic[key.strftime('%Y-%m-%d')].append(val)
+        print(ddic)
         return dict(ddic)
 
 
 async def main():
-    #crawler = PttCrawler("C:\\Config\\telegram_config.json")
-    crawler = PttCrawler()
-    result = crawler.get_comments(['台積電'],'2021/12/31','2022/3/1',100)
+    crawler = TelgramCrawler("C:\\Config\\telegram_config.json")
+    # crawler = PttCrawler()
+    result = crawler.get_comments('台積電','2021/12/31','2022/3/1',100)
     # jieba.load_userdict('./stock_list.txt')
     # twStockFiltered=list(filter(lambda x:x[1].type == '股票', twstock.twse.items()))
     # twStocksSet = set(map(lambda x:x[1].name,twStockFiltered))

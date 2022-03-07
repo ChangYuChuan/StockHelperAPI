@@ -7,6 +7,8 @@ from Packages.stockCrawler import PttCrawler, TelgramCrawler
 import json,time
 from Packages.YahooFinance import YahooFinance
 from Packages.pttObj import PttObj
+from functools import wraps
+import asyncio
 
 
 app = Flask(__name__)
@@ -14,7 +16,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/api/StocksHistory', methods=['POST'])
-def get_stock_data():
+def get_stock_history():
     '''The purpose of the API is used to cacluate how much profit we would gain from certain stock if we follow the concept BUY AND HOLD'''
     try:
         result = []
@@ -60,7 +62,7 @@ def get(stock_name):
         db.close()
         return result
     except Exception as ex:
-        return Response("Fail to retrive the data",status=404,mimetype='application/json')
+        return Response("Fail to retrive the data error message={0}".format(ex),status=404,mimetype='application/json')
 
 @app.route('/api/StockData/<source>/<stock_name>/<date>', methods=['POST'])
 def InsertStockComments(source,stock_name,date):
@@ -72,7 +74,7 @@ def InsertStockComments(source,stock_name,date):
         comments = data['comments']
         db.add_stock_comment(stock_name,source,date,comments)
         db.close()
-        return "Insert the data completed"
+        return Response(mimetype='application/json',status=200 )
     except Exception as ex:
         return Response("Fail to insert the data",status=404,mimetype='application/json')
 
@@ -81,13 +83,18 @@ def InsertStockComments(source,stock_name,date):
 def get_ptt_stock_comments():
     '''craw the ptt to get the comments for certain stock'''
     try:
+        print('entering get_ptt_stock_comments()')
         # the methods below is the way how we get the arguments from query.
         start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
         stock_name = request.args.get('stock_name')
+        if stock_name is None or stock_name == '':
+            stock_name = []
+        else:
+            stock_name = [stock_name]
         limit = request.args.get('limit')
         pttCrawler = PttCrawler()
-        result = pttCrawler.get_comments([stock_name],start_date,end_date,limit)
+        result = pttCrawler.get_comments(stock_name,start_date,end_date,limit)
         return {
             "result":result
         }
@@ -95,9 +102,11 @@ def get_ptt_stock_comments():
         return Response("Fail to retrive the data error message={0}".format(ex),status=404,mimetype='application/json')
 
 @app.route('/api/StockData/Telegram', methods=['GET'])
-def get_tele_stock_comments():
+async def get_tele_stock_comments():
     '''craw the ptt to get the comments for certain stock'''
     try:
+        result = ''
+        print('entering get_tele_stock_comments()')
         config_path = "C:\\Config\\telegram_config.json"
         # the methods below is the way how we get the arguments from query.
         start_date = request.args.get('start_date')
@@ -105,11 +114,10 @@ def get_tele_stock_comments():
         stock_name = request.args.get('stock_name')
         limit = request.args.get('limit')
         teleCrawler = TelgramCrawler(config_path)
-        result = teleCrawler.get_comments(stock_name,start_date,end_date)
-        if result[0] == True:
-            return result[1]
-        else:
-            raise Exception(result[1])
+        result = await teleCrawler.get_comments(stock_name,start_date,end_date,limit)
+        return {
+            "result" : result
+        }
     except Exception as ex:
         return Response("Fail to retrive the data error message={0}".format(ex),status=404,mimetype='application/json')
 
