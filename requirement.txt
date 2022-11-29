@@ -1,13 +1,13 @@
 
-beautifulsoup4 @ file:///home/linux1/recipes/ci/beautifulsoup4_1610988766420/work
+beautifulsoup4==4.9.3
 Flask==2.0.3
 Flask-Cors==3.0.10
-jieba @ file:///home/conda/feedstock_root/build_artifacts/jieba_1622403007736/work
+jieba==0.42.1
 Jinja2==3.0.3
 json5==0.9.5
-jsonschema @ file:///tmp/build/80754af9/jsonschema_1602607155483/work
+jsonschema==3.2.0
 mysql-connector-python==8.0.27
-requests @ file:///tmp/build/80754af9/requests_1608241421344/work
+requests==2.25.1
 Telethon==1.23.0
 twstock==1.3.1
 yfinance==0.1.67
